@@ -9,10 +9,10 @@ import "sync"
 func fillChan(n int) (ch chan int) {
 	ch = make(chan int)
 	go func(ch chan int, n int) {
+		defer close(ch)
 		for i := 0; i < n; i++ {
 			ch <- i
 		}
-		close(ch)
 	}(ch, n)
 	return ch
 }
@@ -27,16 +27,15 @@ func merge(cs ...<-chan int) (ch chan int) {
 	for _, c := range cs {
 		wg.Add(1)
 		go func(c <-chan int, ch chan<- int) {
+			defer wg.Done()
 			for v := range c {
 				ch <- v
 			}
-			wg.Done()
 		}(c, ch)
 	}
 	go func() {
+		defer close(ch)
 		wg.Wait()
-		close(ch)
-
 	}()
 
 	return ch
