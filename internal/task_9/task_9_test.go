@@ -1,0 +1,50 @@
+package task_9
+
+import (
+	"context"
+	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
+)
+
+func Test_orDone_Chan_closed(t *testing.T) {
+	ch := make(chan interface{})
+	go func() {
+		for i := 0; i < 3; i++ {
+			ch <- i
+		}
+		close(ch)
+	}()
+
+	var res []interface{}
+	for v := range orDone(context.Background(), ch) {
+		res = append(res, v)
+	}
+	assert.Equal(t, []interface{}{0, 1, 2}, res)
+}
+
+func Test_orDone_Timeout(t *testing.T) {
+	ch := make(chan interface{})
+
+	ctx, closeFn := context.WithTimeout(context.Background(), time.Second)
+	defer closeFn()
+	sendTil := 50000000
+	go func() {
+		defer close(ch)
+
+		for i := 0; i < sendTil; i++ {
+			select {
+			case <-ctx.Done():
+				return
+			case ch <- i:
+			}
+		}
+	}()
+
+	var res []interface{}
+	for v := range orDone(ctx, ch) {
+		res = append(res, v)
+	}
+	assert.True(t, len(res) >= 1)
+	assert.True(t, len(res) < sendTil)
+}
