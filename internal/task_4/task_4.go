@@ -5,8 +5,8 @@ import (
 	"math/rand"
 )
 
-// repeatFn repeatedly calls fn and sends results to the returned chan
-func repeatFn(ctx context.Context, fn func() interface{}) <-chan interface{} {
+// RepeatFn repeatedly calls fn and sends results to the returned chan
+func RepeatFn(ctx context.Context, fn func() interface{}) <-chan interface{} {
 	out := make(chan interface{})
 
 	go func() {
@@ -23,8 +23,8 @@ func repeatFn(ctx context.Context, fn func() interface{}) <-chan interface{} {
 	return out
 }
 
-// take reads from `in` <= nums times, sends them to returned chan
-func take(ctx context.Context, in <-chan interface{}, num int) <-chan interface{} {
+// Take reads from `in` <= nums times, sends them to returned chan
+func Take(ctx context.Context, in <-chan interface{}, num int) <-chan interface{} {
 	out := make(chan interface{})
 	go func() {
 		defer close(out)

@@ -4,9 +4,9 @@ import (
 	"context"
 )
 
-// orDone proxy data from the in chan to returned chan,
+// OrDone proxy data from the in chan to returned chan,
 // while the in chan is open and context is not cancelled
-func orDone(ctx context.Context, in <-chan interface{}) <-chan interface{} {
+func OrDone(ctx context.Context, in <-chan interface{}) <-chan interface{} {
 	out := make(chan interface{})
 
 	go func() {

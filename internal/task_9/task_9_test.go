@@ -17,7 +17,7 @@ func Test_orDone_Chan_closed(t *testing.T) {
 	}()
 
 	var res []interface{}
-	for v := range orDone(context.Background(), ch) {
+	for v := range OrDone(context.Background(), ch) {
 		res = append(res, v)
 	}
 	assert.Equal(t, []interface{}{0, 1, 2}, res)
@@ -43,7 +43,7 @@ func Test_orDone_Timeout(t *testing.T) {
 	}()
 
 	var res []interface{}
-	for v := range orDone(ctx, ch) {
+	for v := range OrDone(ctx, ch) {
 		res = append(res, v)
 	}
 	assert.True(t, len(res) >= 1)

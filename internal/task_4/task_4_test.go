@@ -10,7 +10,7 @@ func Test_From_The_task(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	var res []interface{}
-	for num := range take(ctx, repeatFn(ctx, fnRand), 3) {
+	for num := range Take(ctx, RepeatFn(ctx, fnRand), 3) {
 		res = append(res, num)
 	}
 	assert.Equal(t, 3, len(res))
@@ -20,7 +20,7 @@ func Test_repeatFn(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	ch := repeatFn(ctx, fnRand)
+	ch := RepeatFn(ctx, fnRand)
 	for i := 0; i < 100; i++ {
 		num, ok := <-ch
 		assert.True(t, ok)
@@ -38,9 +38,9 @@ func Test_repeatFn(t *testing.T) {
 func Test_take(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	ch1 := repeatFn(ctx, fnRand)
+	ch1 := RepeatFn(ctx, fnRand)
 
-	ch2 := take(ctx, ch1, 100)
+	ch2 := Take(ctx, ch1, 100)
 	for i := 0; i < 100; i++ {
 		num, ok := <-ch2
 		assert.True(t, ok)
@@ -63,11 +63,11 @@ func Test_take_with_different_ctx(t *testing.T) {
 
 		ctxRepeat, cancelRepeat := context.WithCancel(context.Background())
 		defer cancelRepeat()
-		ch1 := repeatFn(ctxRepeat, fnRand)
+		ch1 := RepeatFn(ctxRepeat, fnRand)
 
 		ctxTake, cancelTake := context.WithCancel(context.Background())
 		defer cancelTake()
-		ch2 := take(ctxTake, ch1, 100)
+		ch2 := Take(ctxTake, ch1, 100)
 		for i := 0; i < 50; i++ {
 			num, ok := <-ch2
 			assert.True(t, ok)
@@ -90,11 +90,11 @@ func Test_take_with_different_ctx(t *testing.T) {
 	t.Run("cancel repeat", func(t *testing.T) {
 		ctxRepeat, cancelRepeat := context.WithCancel(context.Background())
 		defer cancelRepeat()
-		ch1 := repeatFn(ctxRepeat, fnRand)
+		ch1 := RepeatFn(ctxRepeat, fnRand)
 
 		ctxTake, cancelTake := context.WithCancel(context.Background())
 		defer cancelTake()
-		ch2 := take(ctxTake, ch1, 100)
+		ch2 := Take(ctxTake, ch1, 100)
 		for i := 0; i < 50; i++ {
 			num, ok := <-ch2
 			assert.True(t, ok)
