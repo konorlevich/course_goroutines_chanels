@@ -16,20 +16,20 @@ func Test_executeTaskWithTimeout(t *testing.T) {
 	}{
 		{
 			name:       "ctx shorter",
-			timeout:    2 * time.Second,
+			timeout:    3 * time.Second,
 			ctxTimeout: time.Nanosecond,
 			wantErr:    context.DeadlineExceeded,
 		},
 		{
 			name:       "timeout shorter",
 			timeout:    time.Nanosecond,
-			ctxTimeout: 2 * time.Second,
+			ctxTimeout: 3 * time.Second,
 			wantErr:    nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			timeout = tt.timeout
+			timeout.Swap(tt.timeout.Nanoseconds())
 			ctx, cancel := context.WithTimeout(context.Background(), tt.ctxTimeout)
 			defer cancel()
 			if tt.wantErr != nil {

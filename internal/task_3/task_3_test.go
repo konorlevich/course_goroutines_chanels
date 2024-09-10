@@ -41,9 +41,7 @@ func Test_generator_readPart(t *testing.T) {
 			got = append(got, <-ch, <-ch)
 			cancel()
 
-			if diff := cmp.Diff(got, []int{1, 2}); diff != "" {
-				t.Errorf("received: %s", diff)
-			}
+			assert.Equal(t, got, []int{1, 2})
 			lastN, ok := <-ch
 			assert.False(t, ok)
 			assert.Equal(t, 0, lastN)

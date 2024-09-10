@@ -3,10 +3,11 @@ package task_8
 import (
 	"context"
 	"math/rand"
+	"sync/atomic"
 	"time"
 )
 
-var timeout = 100 * time.Millisecond
+var timeout = atomic.Int64{}
 
 // executeTaskWithTimeout
 //
@@ -18,7 +19,7 @@ var timeout = 100 * time.Millisecond
 func executeTaskWithTimeout(ctx context.Context) error {
 	ch := make(chan struct{})
 	go func() {
-		executeTask(timeout)
+		executeTask(time.Duration(timeout.Load()))
 		ch <- struct{}{}
 		close(ch)
 	}()

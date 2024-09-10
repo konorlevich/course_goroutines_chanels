@@ -25,12 +25,12 @@ func Test_orDone_Chan_closed(t *testing.T) {
 
 func Test_orDone_Timeout(t *testing.T) {
 	ch := make(chan interface{})
+	defer close(ch)
 
 	ctx, closeFn := context.WithTimeout(context.Background(), time.Second)
 	defer closeFn()
 	sendTil := 50000000
 	go func() {
-		defer close(ch)
 
 		for i := 0; i < sendTil; i++ {
 			select {
