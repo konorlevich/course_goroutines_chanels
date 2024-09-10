@@ -35,6 +35,7 @@ func Test_orDone_Timeout(t *testing.T) {
 		for i := 0; i < sendTil; i++ {
 			select {
 			case <-ctx.Done():
+				time.Sleep(2 * time.Second)
 				return
 			case ch <- i:
 			}

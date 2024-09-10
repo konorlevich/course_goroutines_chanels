@@ -4,20 +4,28 @@ import (
 	"context"
 )
 
-// orDone, которая направляет данные из канала in в возвращаемый канал,
-// пока канал in открыт и контекст не отменен
+// orDone proxy data from the in chan to returned chan,
+// while the in chan is open and context is not cancelled
 func orDone(ctx context.Context, in <-chan interface{}) <-chan interface{} {
 	out := make(chan interface{})
 
 	go func() {
 		defer close(out)
 
-		for i := range in {
+		for {
 			select {
 			case <-ctx.Done():
 				return
+			case v, ok := <-in:
+				if !ok {
+					return
+				}
+				select {
+				case out <- v:
+				case <-ctx.Done():
+				}
 			default:
-				out <- i
+
 			}
 		}
 	}()
