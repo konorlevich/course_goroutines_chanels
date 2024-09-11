@@ -15,11 +15,16 @@ func tee(ctx context.Context, in <-chan interface{}) (_, _ <-chan interface{}) {
 	go func() {
 		defer close(out1)
 		defer close(out2)
-		for v := range in {
-			out1 <- v
-			out2 <- v
+		for v := range task_9.OrDone(ctx, in) {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				out1 <- v
+				out2 <- v
+			}
 		}
 	}()
 
-	return task_9.OrDone(ctx, out1), task_9.OrDone(ctx, out2)
+	return out1, out2
 }
