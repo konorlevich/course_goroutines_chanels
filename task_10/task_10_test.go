@@ -30,13 +30,14 @@ func Test_tee_from_task(t *testing.T) {
 
 func Test_tee_Timeout(t *testing.T) {
 	in := make(chan interface{})
-	defer close(in)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	sendTil := 500000
 	go func() {
+		defer close(in)
+
 		for i := 0; i < sendTil; i++ {
 			select {
 			case <-ctx.Done():

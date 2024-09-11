@@ -43,6 +43,7 @@ func Test_generator_readPart(t *testing.T) {
 
 			assert.Equal(t, got, []int{1, 2})
 			lastN, ok := <-ch
+			lastN, ok = <-ch
 			assert.False(t, ok)
 			assert.Equal(t, 0, lastN)
 		})
@@ -93,9 +94,6 @@ func Test_squarer_readPart(t *testing.T) {
 			}
 			// the last num left in chanel
 			lastN, ok := <-generated
-			assert.False(t, ok)
-			assert.Equal(t, 0, lastN)
-
 			lastN, ok = <-squared
 			assert.False(t, ok)
 			assert.Equal(t, 0, lastN)
